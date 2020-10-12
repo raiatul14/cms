@@ -44,7 +44,6 @@ class RegisterService:
         if str(data["pincode"]).isdigit() == False or len(str(data["pincode"])) != 6:
             error_message.append("Pincode length should be equal to 6 and should be numeric.")
         if len(str(data["phone"])) != 10 or str(data["phone"]).isdigit() == False:
-            print("over here")
             error_message.append("Phone length should be equal to 10 and should be numeric.")
         if "address" in data.keys():
             if len(data["address"]) > 160:
@@ -97,7 +96,6 @@ class RegisterService:
             error_message_template = ""
             error_messages = self.validate_all_mandatory_fields(error_messages, data)
             if error_messages:
-                print(error_messages)
                 error_message_template = ', '.join(error_messages)
                 return {"error":error_message_template, "status_code":400}
             error_messages = self.validate_field_values_length(error_messages, data)

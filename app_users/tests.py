@@ -7,15 +7,11 @@ User = get_user_model()
 
 class RegistrationTest(APITestCase):
     def setUp(self):
-        # We want to go ahead and originally create a user. 
-        # self.test_user = User.objects.create_user('testuser', 'test@example.com', 'testpassword')
-
-        # URL for creating an account.
         self.create_url = reverse('register_api')
     
     def test_create_user(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Ensure we can create a new user.
         """
         data = {
             'email': 'foobar@example.com',
@@ -31,11 +27,10 @@ class RegistrationTest(APITestCase):
         self.assertEqual(User.objects.count(), 1)
         # And that we're returning a 200 created code.
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Additionally, we want to return the username and email upon successful creation.
 
     def test_create_user_without_mandatory_fields(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Test creation without mandatory fields
         """
         data = {
             'email': 'foobar@example.com',
@@ -45,15 +40,14 @@ class RegistrationTest(APITestCase):
 
         response = self.client.post(self.create_url , data, format='json')
 
-        # We want to make sure we have two users in the database..
+        # We want to make sure we have 0 users in the database..
         self.assertEqual(User.objects.count(), 0)
-        # And that we're returning a 201 created code.
+        # And that we're returning a 400 BAD REQUEST
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        # Additionally, we want to return the username and email upon successful creation.
 
     def test_create_user_with_all_fields(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Create users with mandatory as well as optional fields
         """
         data = {
             "email":"test3@user.com",
@@ -95,10 +89,6 @@ class RegistrationTest(APITestCase):
 
 class LoginTest(APITestCase):
     def setUp(self):
-        # We want to go ahead and originally create a user. 
-        # self.test_user = User.objects.create_user('testuser', 'test@example.com', 'testpassword')
-
-        # URL for creating an account.
         self.user = User.objects.create_user(
         'testuser@user.com',
         'Atul',
@@ -116,7 +106,7 @@ class LoginTest(APITestCase):
 
     def test_login_user(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Check login api with correct credentials
         """
         data = {
             'email': 'testuser@user.com',
@@ -128,7 +118,7 @@ class LoginTest(APITestCase):
 
     def test_login_user_without_email_pass(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Check login without email or password
         """
         data = {
             'email': 'testuser@user.com'
@@ -146,7 +136,7 @@ class LoginTest(APITestCase):
 
     def test_login_user_with_wrong_cred(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Test login with wrong crediantials
         """
         data = {
             'email': 'testuser@user.com',

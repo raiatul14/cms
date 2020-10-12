@@ -45,6 +45,7 @@ class RegisterContentAPI(APIView):
         return Response({'error': 'Something went wrong!', "status_code":500}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request, format=None):
+        """Get all the contents from the database"""
         try:
             data = request.data
             user = request.user

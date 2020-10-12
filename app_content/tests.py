@@ -11,10 +11,6 @@ User = get_user_model()
 
 class ContentTest(APITestCase):
     def setUp(self):
-        # We want to go ahead and originally create a user. 
-        # self.test_user = User.objects.create_user('testuser', 'test@example.com', 'testpassword')
-
-        # URL for creating an account.
         self.client = APIClient()
         self.user = User.objects.create_user(
         'testuser@user.com',
@@ -63,6 +59,9 @@ class ContentTest(APITestCase):
         self.create_url = reverse('reg_con_api')
 
     def create_content(self):
+        """
+        Helper function to Create Content with all valid fields
+        """
         filename='test.pdf'
         document = File(open(os.path.join(os.getcwd(),'time_table.pdf'), 'rb'))
         uploaded_file = SimpleUploadedFile(filename, document.read(), content_type='multipart/form-data')
@@ -79,19 +78,18 @@ class ContentTest(APITestCase):
     
     def test_create_content(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Create content with valid fields.
         """
         response = self.create_content()
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have one content in the database..
         self.assertEqual(Content.objects.count(), 1)
         # And that we're returning a 200 created code.
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Additionally, we want to return the username and email upon successful creation.
 
     def test_create_content_without_document(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Create document without document field.
         """
         filename='test.pdf'
         document = File(open(os.path.join(os.getcwd(),'time_table.pdf'), 'rb'))
@@ -105,15 +103,14 @@ class ContentTest(APITestCase):
 
         response = self.client.post(self.create_url , data, format='multipart')
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have one content in the database..
         self.assertEqual(Content.objects.count(), 0)
-        # And that we're returning a 200 created code.
+        # And that we're returning a 400 bad request code.
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        # Additionally, we want to return the username and email upon successful creation.
 
     def test_create_content_without_title(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Create content without title
         """
         filename='test.pdf'
         document = File(open(os.path.join(os.getcwd(),'time_table.pdf'), 'rb'))
@@ -127,15 +124,14 @@ class ContentTest(APITestCase):
 
         response = self.client.post(self.create_url , data, format='multipart')
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have 0 content in the database..
         self.assertEqual(Content.objects.count(), 0)
-        # And that we're returning a 200 created code.
+        # And that we're returning a 400 bad request code.
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        # Additionally, we want to return the username and email upon successful creation.
 
     def test_create_content_without_body(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Create content without body field
         """
         filename='test.pdf'
         document = File(open(os.path.join(os.getcwd(),'time_table.pdf'), 'rb'))
@@ -149,15 +145,14 @@ class ContentTest(APITestCase):
 
         response = self.client.post(self.create_url , data, format='multipart')
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have zero content in the database..
         self.assertEqual(Content.objects.count(), 0)
-        # And that we're returning a 200 created code.
+        # And that we're returning a 400 bad request code.
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        # Additionally, we want to return the username and email upon successful creation.
     
     def test_create_content_without_summary(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Create content without summary
         """
         filename='test.pdf'
         document = File(open(os.path.join(os.getcwd(),'time_table.pdf'), 'rb'))
@@ -171,16 +166,15 @@ class ContentTest(APITestCase):
 
         response = self.client.post(self.create_url , data, format='multipart')
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have zero content in the database..
         self.assertEqual(Content.objects.count(), 0)
-        # And that we're returning a 200 created code.
+        # And that we're returning a 400 bad request code.
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        # Additionally, we want to return the username and email upon successful creation.
 
 
     def test_create_content_with_any_document_extension(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Create content with any document extension except for pdf
         """
         filename='test.png'
         document = File(open(os.path.join(os.getcwd(),'test.png'), 'rb'))
@@ -195,101 +189,93 @@ class ContentTest(APITestCase):
 
         response = self.client.post(self.create_url , data, format='multipart')
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have zero content in the database..
         self.assertEqual(Content.objects.count(), 0)
-        # And that we're returning a 200 created code.
+        # And that we're returning a 400 bad request code.
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        # Additionally, we want to return the username and email upon successful creation.
 
     def test_delete_content_with_id(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Delete content with id
         """
         response = self.create_content()
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have one content in the database..
         self.assertEqual(Content.objects.count(), 1)
         response = self.client.delete(reverse('rud_api', args=(1,)))
-        # And that we're returning a 200 created code.
         self.assertEqual(Content.objects.count(), 0)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Additionally, we want to return the username and email upon successful creation.
+
 
     def test_delete_content_with_invalid_id(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Delete content with invalid id
         """
         response = self.create_content()
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have one content in the database..
         self.assertEqual(Content.objects.count(), 1)
         response = self.client.delete(reverse('rud_api', args=(10,)))
-        # And that we're returning a 200 created code.
         self.assertEqual(Content.objects.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        # Additionally, we want to return the username and email upon successful creation.
 
 
     def test_delete_content_with_cross_users(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Delete content with non-owner user
         """
         response = self.create_content()
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have one content in the database..
         self.assertEqual(Content.objects.count(), 1)
         self.client.force_authenticate(self.user1)
         response = self.client.delete(reverse('rud_api', args=(1,)))
-        # And that we're returning a 200 created code.
         self.assertEqual(Content.objects.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        # Additionally, we want to return the username and email upon successful creation.
 
 
     def test_get_content_with_id(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Get content with id
         """
         response = self.create_content()
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have one content in the database..
         self.assertEqual(Content.objects.count(), 1)
         response = self.client.get(reverse('rud_api', args=(1,)))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Additionally, we want to return the username and email upon successful creation.
 
     def test_get_content_with_invalid_id(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Get content with non-existing id
         """
         response = self.create_content()
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have one content in the database..
         self.assertEqual(Content.objects.count(), 1)
         response = self.client.get(reverse('rud_api', args=(10,)))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        # Additionally, we want to return the username and email upon successful creation.
 
     def test_get_content_with_cross_users(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Get content with non-owner users
         """
         response = self.create_content()
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have one content in the database..
         self.assertEqual(Content.objects.count(), 1)
+        #login with another user
         self.client.force_authenticate(self.user1)
         response = self.client.get(reverse('rud_api', args=(1,)))
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        # Additionally, we want to return the username and email upon successful creation.
 
     def test_put_content_with_id(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Edit content with an id
         """
         response = self.create_content()
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have one content in the database..
         self.assertEqual(Content.objects.count(), 1)
         title = 'Test Title'
         body = 'Test Body'
@@ -297,19 +283,19 @@ class ContentTest(APITestCase):
         new_data = {'title':title, 'body':body, 'summary':summary}
         response = self.client.put(reverse('rud_api', args=(1,)), new_data, format='multipart')
         con_dict = Content.objects.filter().values()[0]
+        #Check if the response has updated values
         self.assertEqual(body, con_dict.get("body"))
         self.assertEqual(summary, con_dict.get("summary"))
         self.assertEqual(title, con_dict.get("title"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Additionally, we want to return the username and email upon successful creation.
 
     def test_put_content_with_cross_users(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Test edit content with the user whose is not owner of the content
         """
         response = self.create_content()
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have one content in the database..
         self.assertEqual(Content.objects.count(), 1)
         self.client.force_authenticate(self.user1)
         title = 'Test Title'
@@ -318,19 +304,18 @@ class ContentTest(APITestCase):
         new_data = {'title':title, 'body':body, 'summary':summary}
         response = self.client.put(reverse('rud_api', args=(1,)), new_data, format='multipart')
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
-        # Additionally, we want to return the username and email upon successful creation.
 
     def test_contents_through_admin(self):
         """
-        Ensure we can create a new user and a valid token is created with it.
+        Admin will check all the crud operations on content created by different users
         """
 
         response = self.create_content()
 
-        # We want to make sure we have one users in the database..
+        # We want to make sure we have one content in the database..
         self.assertEqual(Content.objects.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+        #user1 logs in
         self.client.force_authenticate(self.user1)
         response = self.create_content()
         self.assertEqual(Content.objects.count(), 2)
@@ -340,7 +325,6 @@ class ContentTest(APITestCase):
         self.client.force_authenticate(self.admin_user)
         ##get all content(user1, user2)
         response = self.client.get(self.create_url)
-        print('fijsdfsdjji',len(json.loads(response.content)))
         self.assertEqual(2, len(json.loads(response.content)))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         ##get by id
@@ -360,35 +344,37 @@ class ContentTest(APITestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         ##delete
         response = self.client.delete(reverse('rud_api', args=(1,)))
-        # And that we're returning a 200 created code.
         self.assertEqual(Content.objects.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        # Additionally, we want to return the username and email upon successful creation.
 
     
 
     def test_search_result(self):
+        """Search result with 2 user created content and check they do not get fetched at the time of different logged in user"""
+        #create content with first user
         response = self.create_content()
         self.assertEqual(Content.objects.count(), 1)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+        #authenticate with another user
         self.client.force_authenticate(self.user1)
+        #create content with second user
         response = self.create_content()
         self.assertEqual(Content.objects.count(), 2)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+        #search the same title name
         response = self.client.get(reverse('search_con_api'), {"q":"Test Title8"})
         resp_data = json.loads(response.content)
-        print("asdh", resp_data)
+        #check if the response has length 1
         self.assertEqual(1, len(resp_data))
+        #check if the correct id has been shown
         self.assertEqual(2, resp_data.get("2").get("id"))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-
+        #authenticate with admin user
         self.client.force_authenticate(self.admin_user)
 
         response = self.client.get(reverse('search_con_api'), {"q":"Test Title8"})
         resp_data = json.loads(response.content)
-        print("asdh", resp_data)
+        #check the response has both contents for admin user
         self.assertEqual(2, len(resp_data))
         self.assertEqual(1, resp_data.get("1").get("id"))
         self.assertEqual(2, resp_data.get("2").get("id"))

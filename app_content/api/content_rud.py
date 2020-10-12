@@ -49,6 +49,7 @@ class ContentRUDAPI(APIView):
         return Response({'error': 'Something went wrong!', "status_code":500}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
     def get(self, request, content_id, format=None):
+        """Gets Content by content_id"""
         try:
             content_ser_obj = ContentRUD()
             user = request.user
@@ -64,6 +65,7 @@ class ContentRUDAPI(APIView):
         return Response({'error': 'Something went wrong!', "status_code":500}, status=HTTP_500_INTERNAL_SERVER_ERROR)
 
     def delete(self, request, content_id, format=None):
+        """Deletes content by content_id"""
         try:
             content_ser_obj = ContentRUD()
             user = request.user

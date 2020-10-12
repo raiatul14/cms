@@ -10,7 +10,6 @@ class IsOwner(permissions.BasePermission):
 
     # def has_permission(self, request, view):
     #     #### can write custom code
-    #     print(view.kwargs)
     #     user = User.objects.get(pk=view.kwargs['id'])
     #     if request.user == user:
     #         return True
@@ -23,5 +22,4 @@ class IsOwner(permissions.BasePermission):
         #     return True
 
         # Instance must have an attribute named `owner`.
-        print("Im here", obj)
         return obj.owner == request.user or request.user.is_admin

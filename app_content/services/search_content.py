@@ -8,6 +8,11 @@ from .utils import format_content
 logger = logging.getLogger(__name__)
 
 class SearchContent:
+    """
+    Search string in title, body, summary, category_name
+    Data is returned based on admin or owner of the content only.
+    Admin will get all contents from database.
+    """
     def get_all_search_result(self, search_string, user, is_admin):
         if search_string:
             if is_admin:

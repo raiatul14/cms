@@ -51,12 +51,12 @@ class ContentCreateRetrieve:
         return error_message
 
     def validate_file(self, uploaded_file, error_message):
-        print("document", uploaded_file.get("document"))
+        """
+        validate file, form.data should have document field and document extension should be pdf
+        """
         if not uploaded_file.get("document"):
-            print("over here")
             error_message.append("PDF document field cannot be empty")
         if uploaded_file.get("document"):
-            print(uploaded_file.get("document").name)
             if not uploaded_file.get("document").name.endswith(".pdf"):
                 error_message.append("Only pdf document upload is allowed")
         return error_message
@@ -64,12 +64,10 @@ class ContentCreateRetrieve:
     @transaction.atomic()
     def create_content(self, data, user, uploaded_file) -> dict:
         """
-        Registers and returns status_code with error/success messages
+        Creates Content and returns status_code with error/success messages
         * 400 is returned if all required fields are not passed in the request
-        * 409 is returned if email already exists
-        * 200 is returned if the user is created successfully
+        * 200 is returned if the content is created successfully
         * 500, if an unhandled exception occurs
-        #TODO add category field validation 
         """
         try:
             error_messages = []
@@ -77,18 +75,14 @@ class ContentCreateRetrieve:
 
             error_messages = self.validate_all_mandatory_fields(error_messages, data)
             if error_messages:
-                print(error_messages)
                 error_message_template = ', '.join(error_messages)
                 return {"error":error_message_template, "status_code":400}
             error_messages = self.validate_file(uploaded_file, error_messages)
-            print("error_messages are", error_messages)
             if error_messages:
-                print(error_messages)
                 error_message_template = ', '.join(error_messages)
                 return {"error":error_message_template, "status_code":400}
             error_messages = self.validate_field_values_length(error_messages, data)
             if error_messages:
-                print(error_messages)
                 error_message_template = ', '.join(error_messages)
                 return {"error":error_message_template, "status_code":400}
             category_obj = Category()
@@ -110,43 +104,16 @@ class ContentCreateRetrieve:
 
 
     def get_all_content(self, user, is_admin):
-        print("is_admin", is_admin)
+        """
+        Return dict with for author as well as admin. If admin, then return all contents.
+        If author is user then only his content is fetched.
+        """
         if is_admin:
             all_content = Content.objects.all().values('id', 'title', 'summary', 'body', 'document', category_name=F('category__name'))
         else:
-            print("user is", user)
             all_content = Content.objects.filter(user__email=user).values('id', 'title', 'summary', 'body', 'document', category_name=F('category__name'))
-        #TODO add category_name for many to many fields
-        # for content in all_content:
-        #     if content.get("categories") != None:
-        #         content.get("categories").append(content.)
-        # print(all_content)
         res_dict = format_content(list(all_content))
-        print('sdfji',res_dict)
         return res_dict
-
-    # def format_content(self, content_list):
-    #     dict_to_return = {}
-    #     for content in content_list:
-    #         if dict_to_return.get(content.get("id")):
-    #             # print("fsdiidsij",dict_to_return.get(content.get("id"))["categories"], content.get("category_name"))
-    #             # dict_to_return.get(content.get("id"))["categories"] = dict_to_return.get(content.get("id")).get("categories").append(content.get("category_name"))
-    #             prev_list_values = dict_to_return.get(content.get("id"))["categories"]
-    #             prev_list_values.append(content.get("category_name"))
-    #             # print("kjdf", prev_list_values)
-    #             dict_to_return.get(content.get("id"))["categories"] = prev_list_values
-    #             # print(dict_to_return)
-    #         else:
-    #             temp_dict = {}
-    #             temp_dict["id"] = content.get("id")
-    #             temp_dict["title"] = content.get("title")
-    #             temp_dict["summary"] = content.get("summary")
-    #             temp_dict["body"] = content.get("body")
-    #             temp_dict["document"] = content.get("document")
-    #             temp_dict["categories"] = [content.get("category_name")]
-    #             dict_to_return[content.get("id")] = temp_dict
-    #     print(dict_to_return)
-    #     return dict_to_return
 
 
 
