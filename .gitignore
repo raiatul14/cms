@@ -1,0 +1,6 @@
+*__pycache__/
+db.sqlite3
+django_cms/media/document/
+*.log
+env
+*migrations/
