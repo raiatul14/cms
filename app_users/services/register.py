@@ -81,7 +81,8 @@ class RegisterService:
                     upp_count += 1
                 if char.islower():
                     low_count += 1
-        error_message.append("Password should have minimumn length of 8 and 1 upper case character and 1 lower case character")
+        error_message.append("Password should have minimum length of 8 and 1 upper case character and 1 lower case character")
+        return error_message
 
     def register(self, data) -> dict:
         """

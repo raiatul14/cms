@@ -15,7 +15,7 @@ def format_content(content_list):
                 temp_dict["title"] = content.get("title")
                 temp_dict["summary"] = content.get("summary")
                 temp_dict["body"] = content.get("body")
-                temp_dict["document"] = content.get("document")
+                temp_dict["document"] = "http://127.0.0.1:8000/media/"+content.get("document")
                 temp_dict["categories"] = [content.get("category_name")]
                 dict_to_return[content.get("id")] = temp_dict
         print(dict_to_return)

@@ -24,8 +24,11 @@ class ContentRUD:
         res_dict = format_content(content_dict)
         return res_dict
 
-    def delete_content_by_id(self, content_id):
-        total_deletion, objects_deleted = Content.objects.filter(id=content_id).delete()
+    def delete_content_by_id(self, content_id, user, is_admin):
+        if is_admin:
+            total_deletion, objects_deleted = Content.objects.filter(id=content_id).delete()
+        else:
+            total_deletion, objects_deleted = Content.objects.filter(id=content_id, user__email=user).delete()
         return total_deletion
 
     def edit_content_by_id(self, content_id, data, upload_file, user, is_admin):

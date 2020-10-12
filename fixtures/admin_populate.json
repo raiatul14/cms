@@ -1,0 +1,16 @@
+[
+    {
+      "model": "app_users.user",
+      "pk": 1,
+      "fields": {
+        "email": "admin@user.com",
+        "first_name": "Admin",
+        "last_name": "User",
+        "phone": 2838212345,
+        "pincode": 400025,
+        "password": "pbkdf2_sha256$216000$ze4bsh0OPUKQ$SZgHcqAt2UIBurvy7JemP01a2wEmlR3L5r8QER6U32k=",
+        "is_staff": true,
+        "is_active": true
+      }
+    }
+  ]

@@ -22,7 +22,7 @@ class ContentCreateRetrieve:
         * categories
         """
         if not data.get("title"):
-            error_message.append("Content must have a title")
+            error_messages.append("Content must have a title")
         if not data.get("body"):
             error_messages.append("Content must have a body")
         if not data.get("summary"):
@@ -51,11 +51,15 @@ class ContentCreateRetrieve:
         return error_message
 
     def validate_file(self, uploaded_file, error_message):
+        print("document", uploaded_file.get("document"))
         if not uploaded_file.get("document"):
-            return error_message.append("PDF document field cannot be empty")
+            print("over here")
+            error_message.append("PDF document field cannot be empty")
         if uploaded_file.get("document"):
+            print(uploaded_file.get("document").name)
             if not uploaded_file.get("document").name.endswith(".pdf"):
-                return error_message.append("Only pdf document upload is allowed")
+                error_message.append("Only pdf document upload is allowed")
+        return error_message
 
     @transaction.atomic()
     def create_content(self, data, user, uploaded_file) -> dict:
@@ -77,6 +81,7 @@ class ContentCreateRetrieve:
                 error_message_template = ', '.join(error_messages)
                 return {"error":error_message_template, "status_code":400}
             error_messages = self.validate_file(uploaded_file, error_messages)
+            print("error_messages are", error_messages)
             if error_messages:
                 print(error_messages)
                 error_message_template = ', '.join(error_messages)
