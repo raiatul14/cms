@@ -21,9 +21,11 @@ There are 2 types of user for content management.(Admin, Author)
   > pip install -r requirements.txt
 
   - Once, all the dependencies are installed we need to run a migration to create tables in database(sqlite3)
-  > python manage.py makemigrations app_users
-  > python manage.py makemigrations app_content
-  > python manage.py migrate
+  ```
+  python manage.py makemigrations app_users
+  python manage.py makemigrations app_content
+  python manage.py migrate
+  ```
 
   - To load admin user data with email -> admin@user.com and password -> 123
   > python manage.py loaddata fixtures/admin_populate.json
